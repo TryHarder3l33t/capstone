@@ -38,17 +38,17 @@ let windowheight = myp5.windowHeight
 //color palette 
 const colors = [
 //Considering setting the ones thats not the base to be color templates based on the tempo of the song, ex: engergetic, slow.. Not sure. Feel free to play around with them -GS
-  //Base - I ll fight over this one
+  //Base
   ['#ffbe0b','#fb5607','#ff006e','#8338ec','#3a86ff'],
 
-  //Something random
-  ['#0d3b66','#faf0ca','f4d35e','#ee964b','#f95738'],
+  //Blues Greens
+  ['#f0f3bd','#02c39a','#00a896','#028090','#05668d'],
 
   //Earthy somewhat
   ['#264653','#2a9d8f','#e9c46a','#f4a261','#e76f51'],
 
-  //Not sold on this one
-  ['#231942','#5e548e','#9f86c0','#be95c4','#e0b1cb'],
+  //Checkers
+  ['#edf2f4','#2b2d42','#ef233c','#8d99ae','#d90429'],
 
   //Cotton Candy
   ["#cdb4db","#ffc8dd",'#ffafcc', '#bde0fe', '#a2d2ff']
@@ -242,14 +242,11 @@ const Visualizer = () => {
           selectedPalette++
       }
 
+      //will be for pop up
       if (myp5.keyCode === 72) {
         console.log('instructions')
       }
 
-      //if the D key is pressed, display the speed
-      if (myp5.keyCode === 68) {
-        console.log('instruction')
-      }
       return false; 
     }
 
@@ -272,7 +269,6 @@ const Visualizer = () => {
 
   return (
     <>
-      {/* <p style={{textAlign: 'left', color: 'green', background: 'black', fontsize: '1rem',height:'100%'}}>{currentSpeed}</p> */}
     <Sketch setup={setup} draw={draw} preload={preload} windowResized={windowResized} keyPressed={keyPresses}/>
       <div style={{display: 'flex', justifyContent:'space-around'}}>
         <input type="file" title=" " name="file" accept="audio/*" onChange={(event) => {

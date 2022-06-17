@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Sketch from 'react-p5';
 import 'p5/lib/addons/p5.sound';
 import Instructions from './Instructions';
+import { display } from '@mui/system';
 // import Modal from '@material-ui/core/Modal';
 
 //IMPORTANT: Each array has a length of 5, the order is treble, lowmid, mid, highmid, bass
@@ -68,11 +69,11 @@ const topSpeeds = [
 
 
 const getCurrentSpeed = () => {
-  if (selectedSpeed === 0) return 'slowest'
-  if (selectedSpeed === 1) return 'slower'
-  if (selectedSpeed === 2) return 'normal'
-  if (selectedSpeed === 3) return 'faster'
-  if (selectedSpeed === 4) return 'fastest'
+  if (selectedSpeed === 0) return 'Slowest'
+  if (selectedSpeed === 1) return 'Slower'
+  if (selectedSpeed === 2) return 'Normal'
+  if (selectedSpeed === 3) return 'Faster'
+  if (selectedSpeed === 4) return 'Fastest'
   // return 'normal'
 }
  
@@ -91,6 +92,14 @@ const Visualizer = () => {
   const draw = (p) => {
     //sets the background color of canvas
     p.background("black")
+
+    p.translate(24, 24)
+
+    //Tells the user the current speed setting when music is playing
+    p.fill('white')
+    p.textSize(12)
+    p.text('Current Speed Setting', 24,12)
+    p.text(currentSpeed, 24,40)
 
     //moves canvas to center
     p.translate(p.width/2, p.height/2)
@@ -236,6 +245,11 @@ const Visualizer = () => {
       if (myp5.keyCode === 72) {
         console.log('instructions')
       }
+
+      //if the D key is pressed, display the speed
+      if (myp5.keyCode === 68) {
+        console.log('instruction')
+      }
       return false; 
     }
 
@@ -257,21 +271,19 @@ const Visualizer = () => {
   }    
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
-      <h1>{currentSpeed}</h1>
-      <div>
-        <Sketch setup={setup} draw={draw} preload={preload} windowResized={windowResized} keyPressed={keyPresses}/>
-      </div>
-
+    <>
+      {/* <p style={{textAlign: 'left', color: 'green', background: 'black', fontsize: '1rem',height:'100%'}}>{currentSpeed}</p> */}
+    <Sketch setup={setup} draw={draw} preload={preload} windowResized={windowResized} keyPressed={keyPresses}/>
       <div style={{display: 'flex', justifyContent:'space-around'}}>
-        <input type="file" name="file" accept="audio/*" onChange={(event) => {
+        <input type="file" title=" " name="file" accept="audio/*" onChange={(event) => {
           console.log('changing')
           setAudio(event.target.files[0])}
         }/>
-        <button onClick={mouseClicked}> Play </button>
+        <button onClick={mouseClicked}> Play / Pause </button>
       </div>
-    </div>
+    </>
     ) 
 }
 
 export default Visualizer
+

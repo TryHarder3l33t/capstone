@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Sketch from 'react-p5';
 import 'p5/lib/addons/p5.sound';
+import Instructions from './Instructions';
+// import Modal from '@material-ui/core/Modal';
 
 //IMPORTANT: Each array has a length of 5, the order is treble, lowmid, mid, highmid, bass
 
@@ -230,6 +232,10 @@ const Visualizer = () => {
         }          
           selectedPalette++
       }
+
+      if (myp5.keyCode === 72) {
+        console.log('instructions')
+      }
       return false; 
     }
 
@@ -254,14 +260,15 @@ const Visualizer = () => {
     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
       <h1>{currentSpeed}</h1>
       <div>
-        <Sketch setup={setup} draw={draw} preload={preload} mouseClicked={mouseClicked} windowResized={windowResized} keyPressed={keyPresses}/>
+        <Sketch setup={setup} draw={draw} preload={preload} windowResized={windowResized} keyPressed={keyPresses}/>
       </div>
 
       <div style={{display: 'flex', justifyContent:'space-around'}}>
         <input type="file" name="file" accept="audio/*" onChange={(event) => {
+          console.log('changing')
           setAudio(event.target.files[0])}
         }/>
-        <button> Play </button>
+        <button onClick={mouseClicked}> Play </button>
       </div>
     </div>
     ) 

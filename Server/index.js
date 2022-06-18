@@ -9,6 +9,8 @@ app.use(express.json());
 //needed for heroku deploy
 app.use(express.static(path.join(__dirname, 'client/build')));
 
+app.use(express.static(__dirname + '/public'));
+
 //middleware stating if /api comes in send it to the folder api it will hit the index file which will route it
 app.use('/api', require('../api'));
 

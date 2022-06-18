@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Sketch from 'react-p5';
 import 'p5/lib/addons/p5.sound';
 import Instructions from './Instructions';
-import { display } from '@mui/system';
 // import Modal from '@material-ui/core/Modal';
 
 //IMPORTANT: Each array has a length of 5, the order is treble, lowmid, mid, highmid, bass
@@ -31,9 +30,6 @@ const radiusMultiplier = [1, 1.5, 2,2.5,3]
 const numOfCircles = 5
 //if its 1, it will go right, -1 it will go left.
 const directions = [-1, 1, -1, 1, -1]
-let windowWidth = myp5.windowWidth
-let windowheight = myp5.windowHeight
-
 
 //color palette 
 const colors = [
@@ -83,9 +79,11 @@ const Visualizer = () => {
 
   // function that is passed to the sketch component as a prop
   const setup = (p, canvasParentRef) => {
-    p.createCanvas(windowWidth, windowheight).parent(canvasParentRef)
+    p.createCanvas(p.windowWidth, p.windowHeight).parent(canvasParentRef)
     fft = new P5.FFT()
     p.frameRate(120)
+
+    // p.background("black")
   }
 
     //function that is passed to the sketch component as a prop
@@ -207,6 +205,15 @@ const Visualizer = () => {
     preload()
   },[audio])
 
+//makes the background completely black and removes it when we leave the page
+  useEffect(()  => {
+    document.body.classList.add('bg-black');
+
+    return () => {
+        document.body.classList.remove('bg-black');
+    };
+},[]);
+
     const keyPresses = () => {
       // adds speed, press a 
       if(myp5.keyCode === 65) {
@@ -252,7 +259,7 @@ const Visualizer = () => {
 
     //if the window was set one way, this will readjust the drawing when it is changed.
    const windowResized = () => {
-    myp5.resizeCanvas(myp5.windowWidth, myp5.windowHeight);
+    myp5.resizeCanvas(window.innerWidth, window.innerHeight);
   }
 
   //Pause / Play feature
@@ -270,16 +277,14 @@ const Visualizer = () => {
   return (
     <>
     <Sketch setup={setup} draw={draw} preload={preload} windowResized={windowResized} keyPressed={keyPresses}/>
-      <div style={{display: 'flex', justifyContent:'space-around'}}>
-        <input type="file" title=" " name="file" accept="audio/*" onChange={(event) => {
-          console.log('changing')
+      <div style={{display: 'flex', justifyContent:'space-around', padding: '1.5rem'}}>
+        <input style={{color:'white'}} type="file" name="file" accept="audio/*" onChange={(event) => {
           setAudio(event.target.files[0])}
         }/>
-        <button onClick={mouseClicked}> Play / Pause </button>
+        <button style={{height: '50px', borderRadius:'5px', padding: '1rem'}} onClick={mouseClicked}> Play / Pause </button>
       </div>
     </>
     ) 
 }
 
 export default Visualizer
-

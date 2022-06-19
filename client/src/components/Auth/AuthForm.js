@@ -14,7 +14,12 @@ import {
   IconButton,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { signIn_signUp } from '../store';
+import { signIn_signUp } from '../../store';
+import getGoogleOAuthURL from './getGoogleUrl';
+
+//import Link from '@mui/material/Link';
+// or
+import { Link } from '@mui/material';
 
 const paperStyle = {
   padding: 20,
@@ -181,15 +186,18 @@ const Login = () => {
                 </Button>
               </form>
               {error ? <p>{error}</p> : ''}
-              <p>
+              <div>
                 <span className='line'>
                   {/*put router link here*/}
 
                   <Button onClick={() => handleSignButton()}>
                     {signUp ? <p>Sign In</p> : <p>Sign Up</p>}
                   </Button>
+                  <Button href={getGoogleOAuthURL()}>
+                    {signUp ? <p>Google Login</p> : <p>Google Sign Up</p>}
+                  </Button>
                 </span>
-              </p>
+              </div>
             </section>
           </Paper>
         </Grid>

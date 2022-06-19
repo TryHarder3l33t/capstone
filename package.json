@@ -21,6 +21,7 @@
   "homepage": "https://github.com/TryHarder3l33t/capstone#readme",
   "dependencies": {
     "aws-sdk": "^2.1151.0",
+    "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "nodemon": "^2.0.16",

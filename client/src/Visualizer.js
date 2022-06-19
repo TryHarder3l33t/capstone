@@ -2,14 +2,9 @@ import React, { useState, useEffect } from 'react'
 import Sketch from 'react-p5';
 import 'p5/lib/addons/p5.sound';
 import Instructions from './Instructions';
-// import Modal from '@material-ui/core/Modal';
+import Box from '@mui/material/Box';
 
 //IMPORTANT: Each array has a length of 5, the order is treble, lowmid, mid, highmid, bass
-
-// W key = Reverse direction of where the diamonds are currently going
-//A key = increases the top speed of diamonds when a song is playing by a set amount
-//S key = decreases the top speed of diamonds when a song is playing by a set amount
-// Enter key = Cycles through colors! 
 
 // react-p5 has this so we can use p5 methods outside of draw, and set up.
 const myp5 = new window.p5()
@@ -18,9 +13,34 @@ const P5 = Object.getPrototypeOf(myp5).constructor
 
 let currentSound;
 let fft;
+
+//color palette 
+const colors = [
+
+    {label:'Default', color: ['#ffbe0b','#fb5607','#ff006e','#8338ec','#3a86ff']},
+
+    {label:'Colorful and Balanced', color: ['#E27D60','#85DCB','#E8A87C','#C38D9E','#41B3A3']},
+
+    {label:'Bright Accent Colors', color: ["#242582","#553D67",'#F64C72', '#99738E', '#2F2FA2']},
+
+    {label:'Natural and Earthy', color: ["#8D8741","#659DBD",'#DAAD86', '#BC986A', '#FBEEC1']},
+  
+    {label:'Cheerful and Energetic', color: ["#FBE8A6","#F4976C",'#303C6C', '#B4DFE5', '#D2FDFF']},
+
+    {label:'Artsy and Creative', color: ["#D79922","#EFE2BA",'#F13C20', '#4056A1', '#C5CBE3']},
+
+    {label:'Clean and Energetic', color: ["#5680E9","#84CEEB",'#5AB9EA', '#C1C8E4', '#8860D0']},
+
+    {label:'Vibrant and Elegant', color: ["#F8E9A1","#F76C6C",'#A8D0E6', '#374785', '#24305E']},
+
+    {label:'Bright Pink and Pastels', color: ["#A1C3D1","#B39BC8",'#F0EBF4', '#F172A1', '#E64398']},
+    //Rich and Colorful
+    {label:'Rich and Colorful', color: ["#F78888","#F3D250",'#ECECEC', '#90CCF4', '#5DA2D5']},
+
+]
+
 //if you try to make this one variable, they will all move in unison, we dont want that.
 let angles = [45, 45, 45, 45, 45]
-let selectedPalette = 0
 let selectedSpeed = 2
   
 // Circle's radius
@@ -30,25 +50,8 @@ const radiusMultiplier = [1, 1.5, 2,2.5,3]
 const numOfCircles = 5
 //if its 1, it will go right, -1 it will go left.
 const directions = [-1, 1, -1, 1, -1]
-
-//color palette 
-const colors = [
-//Considering setting the ones thats not the base to be color templates based on the tempo of the song, ex: engergetic, slow.. Not sure. Feel free to play around with them -GS
-  //Base
-  ['#ffbe0b','#fb5607','#ff006e','#8338ec','#3a86ff'],
-
-  //Blues Greens
-  ['#f0f3bd','#02c39a','#00a896','#028090','#05668d'],
-
-  //Earthy somewhat
-  ['#264653','#2a9d8f','#e9c46a','#f4a261','#e76f51'],
-
-  //Checkers
-  ['#edf2f4','#2b2d42','#ef233c','#8d99ae','#d90429'],
-
-  //Cotton Candy
-  ["#cdb4db","#ffc8dd",'#ffafcc', '#bde0fe', '#a2d2ff']
-]
+let windowWidth = myp5.windowWidth
+let windowheight = myp5.windowHeight
 
 const topSpeeds = [
   //slowest
@@ -63,19 +66,18 @@ const topSpeeds = [
   [3.8, 1.4, 3.2, 2.8, 1.4]
 ]
 
-
 const getCurrentSpeed = () => {
   if (selectedSpeed === 0) return 'Slowest'
   if (selectedSpeed === 1) return 'Slower'
   if (selectedSpeed === 2) return 'Normal'
   if (selectedSpeed === 3) return 'Faster'
   if (selectedSpeed === 4) return 'Fastest'
-  // return 'normal'
 }
  
 const Visualizer = () => {
   const [audio, setAudio] = useState('')
   const [currentSpeed, setCurrentSpeed] = useState(getCurrentSpeed())
+  const [colorTheme, setColorTheme] = useState(0)
 
   // function that is passed to the sketch component as a prop
   const setup = (p, canvasParentRef) => {
@@ -91,13 +93,21 @@ const Visualizer = () => {
     //sets the background color of canvas
     p.background("black")
 
-    p.translate(24, 24)
-
     //Tells the user the current speed setting when music is playing
+    p.push()
     p.fill('white')
     p.textSize(12)
-    p.text('Current Speed Setting', 24,12)
-    p.text(currentSpeed, 24,40)
+    p.text('Current Max Speed Setting', 100,12)
+    p.text(currentSpeed, 100,40)
+    p.pop()
+
+    //Tells the user the current color theme being used
+    p.push()
+    p.fill('white')
+    p.textSize(12)
+    p.text('Current Color Theme', windowWidth-200,12)
+    p.text(colors[colorTheme].label, windowWidth-200,40)
+    p.pop()
 
     //moves canvas to center
     p.translate(p.width/2, p.height/2)
@@ -179,7 +189,8 @@ const Visualizer = () => {
     //for every 2 degrees moved place a diamond 
     for (let a = 0; a < p.radians(12); a+=p.radians(2)) {
       //Makes diamonds instances 
-      const diamond = new Diamond(x,y,a, sizes[current], p.color(colors[selectedPalette][current]), speeds[current], directions[current])
+
+      const diamond = new Diamond(x,y,a, sizes[current], p.color(colors[colorTheme].color[current]), speeds[current], directions[current])
       //this is what draws the diamonds
       diamond.draw(a)
     }
@@ -205,7 +216,7 @@ const Visualizer = () => {
     preload()
   },[audio])
 
-//makes the background completely black and removes it when we leave the page
+  //makes the background completely black and removes it when we leave the page
   useEffect(()  => {
     document.body.classList.add('bg-black');
 
@@ -240,13 +251,14 @@ const Visualizer = () => {
        
        // Cycles color palette by pressing enter key
       if (myp5.keyCode === 13) {   
+        console.log(colorTheme)
         //if we are on the last palette
-        if(selectedPalette === 4)  {
+        if(colorTheme === 9)  {
           //reset the cycle
-          selectedPalette = 0;
+          setColorTheme(0)
           return;
         }          
-          selectedPalette++
+          setColorTheme(colorTheme+1)
       }
 
       //will be for pop up
@@ -275,13 +287,33 @@ const Visualizer = () => {
   }    
 
   return (
-    <>
-    <Sketch setup={setup} draw={draw} preload={preload} windowResized={windowResized} keyPressed={keyPresses}/>
-      <div style={{display: 'flex', justifyContent:'space-around', padding: '1.5rem'}}>
-        <input style={{color:'white'}} type="file" name="file" accept="audio/*" onChange={(event) => {
-          setAudio(event.target.files[0])}
-        }/>
-        <button style={{height: '50px', borderRadius:'5px', padding: '1rem'}} onClick={mouseClicked}> Play / Pause </button>
+    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
+      <Box sx={{
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-around',
+        alignItems:'center',
+        width:'100%'
+      }}>
+        <Instructions />
+      </Box>
+
+      
+      <div>
+        <Sketch setup={setup} draw={draw} preload={preload} windowResized={windowResized} keyPressed={keyPresses}/>
+      </div>
+
+      <div style={{display: 'flex', justifyContent:'space-around'}}>
+     
+        <label class="music-upload-button">
+          <input id='music-upload-input' type="file" name="file" accept="audio/*" onChange={(event) => {
+            setAudio(event.target.files[0])}
+          }/>
+            Upload a track
+        </label>
+   
+       
+        <button id='play-button' onClick={mouseClicked}> Play / Pause </button>
       </div>
     </>
     ) 

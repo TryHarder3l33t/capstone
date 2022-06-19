@@ -3,7 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import Upload from './Upload/Upload';
 import Visualizer from './Visualizer';
 import SpotifyLogin from './Spotify';
-import Instructions from './Instructions';
+import Playlist from './Playlist'
+
 //import { useSelector } from 'react-redux';
 
 const Routing = () => {
@@ -13,7 +14,7 @@ const Routing = () => {
       <Route path='/' element={<Visualizer />} />
       <Route path='/Upload' element={<Upload />} />
       <Route path='/spotify' element={<SpotifyLogin/>}/>
-      <Route path='/instructions' element={<Instructions/>}/>
+      <Route path='/playlist' element={<Playlist/>}/>
     </Routes>
   );
 };
